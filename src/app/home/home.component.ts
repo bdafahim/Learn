@@ -29,9 +29,11 @@ export class HomeComponent implements OnInit {
     this.reloadCourses();
   }
   reloadCourses() {
+    this.loadingService.showLoadingScreen();
     const courses$ = this.courseService.loadAllCourses()
       .pipe(
-        map(courses => courses.sort(sortCoursesBySeqNo))
+        map(courses => courses.sort(sortCoursesBySeqNo)),
+        finalize(() => this.loadingService.hideLoadingScreen())
       );
     courses$.subscribe(value => console.log(value));
     this.beginnerCourses$ = courses$
