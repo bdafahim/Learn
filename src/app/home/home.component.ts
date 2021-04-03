@@ -29,20 +29,20 @@ export class HomeComponent implements OnInit {
     this.reloadCourses();
   }
   reloadCourses() {
-    this.loadingService.showLoadingScreen();
+    // this.loadingService.showLoadingScreen();
     const courses$ = this.courseService.loadAllCourses()
       .pipe(
         map(courses => courses.sort(sortCoursesBySeqNo)),
-        finalize(() => this.loadingService.hideLoadingScreen())
+       // finalize(() => this.loadingService.hideLoadingScreen())
       );
-    courses$.subscribe(value => console.log(value));
-    this.beginnerCourses$ = courses$
+    const loadCourses$ = this.loadingService.showLoaderUntilCompleted(courses$);
+    this.beginnerCourses$ = loadCourses$
       .pipe(
         map(courses => {
           return courses.filter(course => course.category === 'BEGINNER');
         })
       );
-    this.advancedCourses$ = courses$
+    this.advancedCourses$ = loadCourses$
       .pipe(
         map(courses => {
           return courses.filter(course => course.category === 'ADVANCED');
